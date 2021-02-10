@@ -9,11 +9,11 @@ type HeaderProps = {
 const Header = ({onAddClick,onImport} : HeaderProps) => {
   const MenuItems = [
     {
-      title: "Создать",
+      title: "Add film",
       onClick: () => onAddClick(),
     },
     {
-      title: "Импортировать",
+      title: "Import",
       onClick: () => onImport(),
     },
   ];

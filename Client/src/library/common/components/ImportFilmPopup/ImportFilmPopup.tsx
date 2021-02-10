@@ -24,7 +24,7 @@ const ImportFilmPopup = ({ onClose,onSubmit, visible }: ImportFilmPopupProps) =>
     <Popup onClose={onClose}>
       <Wrapper>
         <Drop>
-          <DropzoneArea onChange={handleUploadFile} />
+          <DropzoneArea acceptedFiles={['text/plain']} onChange={handleUploadFile} />
         </Drop>
           <ButtonsWrapper>
               <StyledButton
@@ -36,6 +36,7 @@ const ImportFilmPopup = ({ onClose,onSubmit, visible }: ImportFilmPopupProps) =>
               </StyledButton>
               <StyledButton
                   variant="contained"
+                  disabled={!files[0]}
                   color="primary"
                   onClick={() => {
                       handleSubmit()

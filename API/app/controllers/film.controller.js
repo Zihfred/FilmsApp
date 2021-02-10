@@ -1,6 +1,6 @@
 const db = require("../models");
 const Film = db.films;
-
+const fs = require('fs');
 
 exports.create = (req, res) => {
 
@@ -8,6 +8,22 @@ exports.create = (req, res) => {
     res.status(400).send({ message: "Content can not be empty!" });
     return;
   }
+  var condition = {    title: req.body.title ,
+    release: req.body.release ,
+    format: req.body.format ,
+    stars: req.body.stars};
+
+  Film.find(condition)
+    .then(data => {
+      console.log(data)
+      if(data.length){
+        res.status(500).send({
+          message:
+            "Film already Added"
+        });
+      }
+
+    })
 
   const film = new Film({
     title: req.body.title || "",
@@ -70,10 +86,10 @@ exports.delete = (req, res) => {
 };
 
 exports.import = (req,res) => {
+  console.log(req.body)
   Film.deleteMany().then((data) => {
-    console.log(req)
     res.send({
-      message: "Film was deleted successfully!"
+      message: "Films was deleted successfully!"
     });
   })
 

@@ -9,6 +9,7 @@ import popups from "../../library/common/constants/Popups";
 import Header from "../../library/common/components/Header/Header";
 import ImportFilmPopup from "../../library/common/components/ImportFilmPopup/ImportFilmPopup";
 import DetailsPopup from "../../library/common/components/DetailsPopup/DetailsPopup";
+import ConfirmDeleteFilm from "../../library/common/components/ConfirmDeleteFilm/ConfirmDeleteFilm";
 
 const Main = () => {
   const [films, setFilms] = useState([]);
@@ -43,7 +44,7 @@ const Main = () => {
 
   const handleImportFilms = async (films: any) => {
     const filmsBlob = await toBase64(films[0]);
-    API.filmService.importFilms({ films: filmsBlob });
+    API.filmService.importFilms({ films: filmsBlob }).then(()=>setFilms([]))
   };
 
   const handleAddFilm = (newFilm: FilmType) => {
@@ -102,7 +103,7 @@ const Main = () => {
         title={filters.title}
         star={filters.star}
         onChangeFilter={handleChangeFilter}
-        titleList={films?.length && films.map((film: FilmType) => film.title)}
+        titleList={Array.from(new Set(films.map((film: FilmType) => film.title)))}
         starsList={
           films?.length &&
           Array.from(new Set(films.map((film: FilmType) => film.stars).flat(1)))

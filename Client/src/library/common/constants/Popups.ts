@@ -1,7 +1,8 @@
 const popups = {
     import: "import",
     details: "details",
-    add: "add"
+    add: "add",
+    delete: "delete",
 }
 
 export default popups

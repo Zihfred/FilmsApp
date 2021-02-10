@@ -5,9 +5,11 @@ import {
   CardContent,
   Typography,
 } from "@material-ui/core";
-import React from "react";
+import React, {useState} from "react";
 import styled from "styled-components";
 import FilmType from "../../Types/FilmType";
+import ConfirmDeleteFilm from "../ConfirmDeleteFilm/ConfirmDeleteFilm";
+import popups from "../../constants/Popups";
 
 type FilmProps = {
   film: FilmType;
@@ -16,8 +18,19 @@ type FilmProps = {
 };
 
 const Film = ({ film, onRemove,onOpenDetails }: FilmProps) => {
+    const [activePopup, setActivePopup] = useState("")
+
+
+    const handleClosePopup = () => {
+        setActivePopup("")
+    }
+
+
+    const handleRemoveClick = () => setActivePopup(popups.delete)
+
   return (
     <Wrapper>
+        <ConfirmDeleteFilm visible={activePopup === popups.delete} onClose={handleClosePopup} onSubmit={()=>onRemove(film.id)} />
       <CardContent>
         <Typography color="textSecondary" gutterBottom>
           {film.title}
@@ -25,7 +38,7 @@ const Film = ({ film, onRemove,onOpenDetails }: FilmProps) => {
       </CardContent>
       <CardActions>
         <Button size="small" onClick={()=>onOpenDetails(film)}>Details</Button>
-        <Button size="small" onClick={()=>onRemove(film.id)}>Remove</Button>
+        <Button size="small" onClick={handleRemoveClick}>Remove</Button>
       </CardActions>
     </Wrapper>
   );

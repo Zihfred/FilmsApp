@@ -3,7 +3,7 @@ import ChipInput from "material-ui-chip-input";
 import React, { useState } from "react";
 import Popup from "../Popup/Popup";
 import styled from "styled-components";
-import { Button } from "@material-ui/core";
+import { Button, FormControl, InputLabel, MenuItem, Select } from "@material-ui/core";
 import FilmType from "../../Types/FilmType";
 
 type AddFilmPopupProps = {
@@ -12,6 +12,11 @@ type AddFilmPopupProps = {
   onSubmit: (data: FilmType) => void;
 };
 
+function validateYear(year: number | string, start: number | string, end: number | string) : boolean
+{
+  return  year <= end && year>= start
+}
+
 const AddFilmPopup = ({ visible, onClose, onSubmit }: AddFilmPopupProps) => {
   const [filmAttr, setFilmAttr] = useState({
     title: "",
@@ -19,8 +24,16 @@ const AddFilmPopup = ({ visible, onClose, onSubmit }: AddFilmPopupProps) => {
     format: "",
     stars: [],
   });
+
+  const [releaseTouched, setReleaseTouched] = useState(false)
+
+
+
   const handleChangeFilmAttr = (type: string, value: any) => {
     setFilmAttr({ ...filmAttr, [type]: value });
+    if(type === "release"){
+      setReleaseTouched(true)
+    }
   };
   if (!visible) return null;
 
@@ -34,6 +47,8 @@ const AddFilmPopup = ({ visible, onClose, onSubmit }: AddFilmPopupProps) => {
     onClose();
   };
 
+
+  const yearError = validateYear(filmAttr.release, 1850,2020)
   return (
     <Popup>
       <Wrapper>
@@ -41,6 +56,7 @@ const AddFilmPopup = ({ visible, onClose, onSubmit }: AddFilmPopupProps) => {
           <TextField
             fullWidth
             name={"title"}
+
             onChange={(e: React.ChangeEvent<any>) =>
               handleChangeFilmAttr(e.target.name, e.target.value)
             }
@@ -54,6 +70,8 @@ const AddFilmPopup = ({ visible, onClose, onSubmit }: AddFilmPopupProps) => {
             fullWidth
             label="Release"
             name={"release"}
+            helperText={!yearError && releaseTouched && "1850-2020"}
+            error={!yearError && releaseTouched}
             value={filmAttr.release}
             onChange={(e: React.ChangeEvent<any>) =>
               handleChangeFilmAttr(e.target.name, e.target.value)
@@ -62,16 +80,24 @@ const AddFilmPopup = ({ visible, onClose, onSubmit }: AddFilmPopupProps) => {
           />
         </InputWrapper>
         <InputWrapper>
-          <TextField
-            fullWidth
-            label="Format"
-            value={filmAttr.format}
-            name={"format"}
-            onChange={(e: React.ChangeEvent<any>) =>
-              handleChangeFilmAttr(e.target.name, e.target.value)
-            }
-            variant="outlined"
-          />
+          <FormControl variant="outlined" >
+            <InputLabel id="demo-simple-select-outlined-label">Format</InputLabel>
+            <Select
+                name={"format"}
+                labelId="demo-simple-select-outlined-label"
+                id="demo-simple-select-outlined"
+                value={filmAttr.format}
+                onChange={(e: React.ChangeEvent<any>) =>
+                    handleChangeFilmAttr(e.target.name, e.target.value)
+                }
+                // onChange={handleChange}
+                label="Age"
+            >
+              <MenuItem value={"DVD"}>DVD</MenuItem>
+              <MenuItem value={"VHS"}>VHS</MenuItem>
+              <MenuItem value={"Blu-Ray"}>Blu-Ray</MenuItem>
+            </Select>
+          </FormControl>
         </InputWrapper>
         <InputWrapper>
           <ChipInput
@@ -108,7 +134,7 @@ const AddFilmPopup = ({ visible, onClose, onSubmit }: AddFilmPopupProps) => {
             disabled={
               !Boolean(
                 Object.values(filmAttr).every((attr) => attr) &&
-                  filmAttr.stars?.length
+                  filmAttr.stars?.length && yearError
               )
             }
           >
